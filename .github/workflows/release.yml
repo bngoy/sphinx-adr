@@ -31,17 +31,26 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Verify version consistency
+      - name: Sync VERSION into __init__.py
         run: |
-          FILE_VERSION=$(cat VERSION | tr -d '[:space:]')
+          VERSION=$(cat VERSION | tr -d '[:space:]')
           TAG_VERSION="${GITHUB_REF_NAME#v}"
-          if [ "$FILE_VERSION" != "$TAG_VERSION" ]; then
-            echo "::error::VERSION file ($FILE_VERSION) does not match tag ($TAG_VERSION)"
+          if [ "$VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::VERSION file ($VERSION) does not match tag ($TAG_VERSION)"
             exit 1
           fi
+          sed -i "s/^__version__ = .*/__version__ = \"$VERSION\"/" sphinx_adr/__init__.py
+          echo "Package version set to: $VERSION"
+          grep __version__ sphinx_adr/__init__.py
 
       - name: Build package
         run: uv build
+
+      - name: Verify built package version
+        run: |
+          VERSION=$(cat VERSION | tr -d '[:space:]')
+          ls dist/
+          ls dist/ | grep "$VERSION" || { echo "::error::Built package does not match version $VERSION"; exit 1; }
 
       - name: Publish to PyPI
         run: uv publish
