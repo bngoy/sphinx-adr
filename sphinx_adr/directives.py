@@ -112,6 +112,16 @@ class AdrListDirective(SphinxDirective):
     }
 
     def run(self) -> list[nodes.Node]:
+        env = self.state.document.settings.env
+        docname = env.docname
+
+        # Track which documents host an adrlist so the collector can
+        # register ADR docs in the toctree (suppresses "not in any
+        # toctree" warnings and optionally shows them in the sidebar).
+        if not hasattr(env, "adr_list_hosts"):
+            env.adr_list_hosts = set()
+        env.adr_list_hosts.add(docname)
+
         node = adr_list()
         node["filter_status"] = _parse_comma_list(self.options.get("status", ""))
         node["filter_tags"] = _parse_comma_list(self.options.get("tags", ""))

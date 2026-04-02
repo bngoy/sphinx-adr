@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import pickle
 from datetime import datetime
 from typing import Any
 
 from docutils import nodes
+from sphinx import addnodes
 from sphinx.application import Sphinx
 from sphinx.environment import BuildEnvironment
 
@@ -16,12 +18,16 @@ def init_adr_env(app: Sphinx, env: BuildEnvironment, docnames: list[str]) -> Non
     """Initialise the ADR storage on the build environment."""
     if not hasattr(env, "adr_all_adrs"):
         env.adr_all_adrs: dict[str, dict[str, Any]] = {}
+    if not hasattr(env, "adr_list_hosts"):
+        env.adr_list_hosts: set[str] = set()
 
 
 def purge_adr_doc(app: Sphinx, env: BuildEnvironment, docname: str) -> None:
     """Remove ADR data when a document is re-read (incremental builds)."""
     if hasattr(env, "adr_all_adrs"):
         env.adr_all_adrs.pop(docname, None)
+    if hasattr(env, "adr_list_hosts"):
+        env.adr_list_hosts.discard(docname)
 
 
 def merge_adr_info(
@@ -35,6 +41,95 @@ def merge_adr_info(
         env.adr_all_adrs = {}
     if hasattr(other, "adr_all_adrs"):
         env.adr_all_adrs.update(other.adr_all_adrs)
+    if not hasattr(env, "adr_list_hosts"):
+        env.adr_list_hosts = set()
+    if hasattr(other, "adr_list_hosts"):
+        env.adr_list_hosts.update(other.adr_list_hosts)
+
+
+def register_adr_toctrees(app: Sphinx, env: BuildEnvironment) -> None:
+    """Register ADR docs in the toctree so Sphinx doesn't warn about orphans.
+
+    Called during ``env-updated``, after all documents have been read but
+    before ``check_consistency``.  When ``adr_sidebar_toc`` is True the
+    entries also appear in the sidebar navigation; when False (the default),
+    a hidden toctree suppresses warnings without adding sidebar entries.
+    """
+    if not hasattr(env, "adr_all_adrs") or not hasattr(env, "adr_list_hosts"):
+        return
+
+    all_adr_docnames = list(env.adr_all_adrs.keys())
+    if not all_adr_docnames:
+        return
+
+    show_sidebar = app.config.adr_sidebar_toc
+
+    for host_docname in env.adr_list_hosts:
+        adr_docs = [d for d in all_adr_docnames if d != host_docname]
+        if not adr_docs:
+            continue
+
+        # 1. Update env metadata so Sphinx knows these docs are included
+        for adr_docname in adr_docs:
+            env.files_to_rebuild.setdefault(adr_docname, set()).add(host_docname)
+        existing = env.toctree_includes.get(host_docname, [])
+        to_add = [d for d in adr_docs if d not in existing]
+        if to_add:
+            env.toctree_includes.setdefault(host_docname, []).extend(to_add)
+
+        # 2. When sidebar is enabled, inject a toctree node into the host's
+        #    pickled doctree so Sphinx's sidebar rendering shows the entries.
+        #    When disabled (default), we only register in files_to_rebuild /
+        #    toctree_includes to suppress "not in any toctree" warnings.
+        if show_sidebar:
+            _inject_toctree_node(env, host_docname, adr_docs)
+
+
+def _inject_toctree_node(
+    env: BuildEnvironment,
+    host_docname: str,
+    adr_docnames: list[str],
+) -> None:
+    """Inject a visible toctree node into a pickled doctree and its TOC entry."""
+    # Build the toctree node
+    toc = addnodes.toctree()
+    toc["parent"] = host_docname
+    toc["entries"] = [(None, d) for d in adr_docnames]
+    toc["includefiles"] = list(adr_docnames)
+    toc["maxdepth"] = 1
+    toc["glob"] = False
+    toc["hidden"] = False
+    toc["numbered"] = 0
+    toc["titlesonly"] = True
+    toc["caption"] = None
+    toc["rawcaption"] = ""
+    toc["rawentries"] = []
+
+    # 1. Inject into the pickled doctree (used by master_doctree for sidebar)
+    doctree_path = env.doctreedir / f"{host_docname}.doctree"
+    if doctree_path.exists():
+        with open(doctree_path, "rb") as f:
+            doctree = pickle.load(f)
+        wrapper = nodes.compound(classes=["toctree-wrapper"])
+        wrapper.append(toc.deepcopy())
+        doctree.append(wrapper)
+        with open(doctree_path, "wb") as f:
+            pickle.dump(doctree, f, pickle.HIGHEST_PROTOCOL)
+        env._pickled_doctree_cache.pop(host_docname, None)
+
+    # 2. Inject into env.tocs so sidebar resolution finds the entries
+    if host_docname in env.tocs:
+        toc_tree = env.tocs[host_docname]
+        # Append the toctree node inside the last bullet_list
+        if toc_tree.children:
+            last = toc_tree.children[-1]
+            if isinstance(last, nodes.bullet_list) and last.children:
+                last_item = last.children[-1]
+                last_item.append(toc.deepcopy())
+            else:
+                toc_tree.append(toc.deepcopy())
+        else:
+            toc_tree.append(toc.deepcopy())
 
 
 def _parse_date(date_str: str) -> datetime:
