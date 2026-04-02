@@ -12,7 +12,7 @@ ADR-0004: Switch to MongoDB for Document Storage
 Context and Problem Statement
 -----------------------------
 
-After six months of development, we've found that most of our data is
+After six months of development, we have found that most of our data is
 document-oriented and the relational model adds unnecessary complexity.
 Frequent schema migrations are slowing down the team.
 

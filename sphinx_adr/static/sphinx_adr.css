@@ -1,7 +1,136 @@
 /* ==========================================================================
    sphinx-adr  –  Timeline & status badge styles
    Inspired by log4brains decision log layout.
+
+   Compatible with: alabaster, furo, pydata-sphinx-theme, sphinx-book-theme.
+   Supports light and dark modes via CSS custom properties.
    ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   CSS Custom Properties (light mode defaults)
+   -------------------------------------------------------------------------- */
+
+:root {
+  /* Status badge colors */
+  --adr-accepted-bg: #d4edda;
+  --adr-accepted-fg: #155724;
+  --adr-accepted-accent: #28a745;
+
+  --adr-proposed-bg: #fff3cd;
+  --adr-proposed-fg: #856404;
+  --adr-proposed-accent: #ffc107;
+
+  --adr-deprecated-bg: #f8d7da;
+  --adr-deprecated-fg: #721c24;
+  --adr-deprecated-accent: #dc3545;
+
+  --adr-superseded-bg: #e2e3e5;
+  --adr-superseded-fg: #383d41;
+  --adr-superseded-accent: #6c757d;
+
+  /* General surfaces */
+  --adr-surface: #f8f9fa;
+  --adr-surface-card: #fff;
+  --adr-border: #dee2e6;
+  --adr-border-card: #e9ecef;
+  --adr-shadow: rgba(0, 0, 0, 0.06);
+  --adr-shadow-hover: rgba(0, 0, 0, 0.1);
+
+  /* Text */
+  --adr-text: #212529;
+  --adr-text-secondary: #495057;
+  --adr-text-muted: #6c757d;
+  --adr-link: #0056b3;
+
+  /* Tags */
+  --adr-tag-bg: #e9ecef;
+  --adr-tag-fg: #495057;
+
+  /* Timeline dot border (matches card bg so it "punches through" the line) */
+  --adr-dot-ring: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Dark mode  –  pydata-sphinx-theme & sphinx-book-theme
+   Both themes set  html[data-theme="dark"]
+   -------------------------------------------------------------------------- */
+
+html[data-theme="dark"] {
+  --adr-accepted-bg: #1a3a2a;
+  --adr-accepted-fg: #8fd4a4;
+  --adr-accepted-accent: #2ea54f;
+
+  --adr-proposed-bg: #3d3315;
+  --adr-proposed-fg: #e6c96e;
+  --adr-proposed-accent: #d4a017;
+
+  --adr-deprecated-bg: #3d1a1e;
+  --adr-deprecated-fg: #e6919a;
+  --adr-deprecated-accent: #d94452;
+
+  --adr-superseded-bg: #2a2d31;
+  --adr-superseded-fg: #a4a8ae;
+  --adr-superseded-accent: #808890;
+
+  --adr-surface: #1e2125;
+  --adr-surface-card: #25292e;
+  --adr-border: #3a3f47;
+  --adr-border-card: #343a40;
+  --adr-shadow: rgba(0, 0, 0, 0.2);
+  --adr-shadow-hover: rgba(0, 0, 0, 0.35);
+
+  --adr-text: #dee2e6;
+  --adr-text-secondary: #adb5bd;
+  --adr-text-muted: #868e96;
+  --adr-link: #6cb4ee;
+
+  --adr-tag-bg: #343a40;
+  --adr-tag-fg: #adb5bd;
+
+  --adr-dot-ring: #25292e;
+}
+
+/* --------------------------------------------------------------------------
+   Dark mode  –  furo
+   Furo uses a  body[data-theme="dark"]  or prefers-color-scheme
+   -------------------------------------------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --adr-accepted-bg: #1a3a2a;
+    --adr-accepted-fg: #8fd4a4;
+    --adr-accepted-accent: #2ea54f;
+
+    --adr-proposed-bg: #3d3315;
+    --adr-proposed-fg: #e6c96e;
+    --adr-proposed-accent: #d4a017;
+
+    --adr-deprecated-bg: #3d1a1e;
+    --adr-deprecated-fg: #e6919a;
+    --adr-deprecated-accent: #d94452;
+
+    --adr-superseded-bg: #2a2d31;
+    --adr-superseded-fg: #a4a8ae;
+    --adr-superseded-accent: #808890;
+
+    --adr-surface: #1e2125;
+    --adr-surface-card: #25292e;
+    --adr-border: #3a3f47;
+    --adr-border-card: #343a40;
+    --adr-shadow: rgba(0, 0, 0, 0.2);
+    --adr-shadow-hover: rgba(0, 0, 0, 0.35);
+
+    --adr-text: #dee2e6;
+    --adr-text-secondary: #adb5bd;
+    --adr-text-muted: #868e96;
+    --adr-link: #6cb4ee;
+
+    --adr-tag-bg: #343a40;
+    --adr-tag-fg: #adb5bd;
+
+    --adr-dot-ring: #25292e;
+  }
+}
 
 /* --------------------------------------------------------------------------
    Status badges (shared between meta banner and timeline)
@@ -20,23 +149,23 @@
 }
 
 .adr-status-accepted {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--adr-accepted-bg);
+  color: var(--adr-accepted-fg);
 }
 
 .adr-status-proposed {
-  background-color: #fff3cd;
-  color: #856404;
+  background-color: var(--adr-proposed-bg);
+  color: var(--adr-proposed-fg);
 }
 
 .adr-status-deprecated {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--adr-deprecated-bg);
+  color: var(--adr-deprecated-fg);
 }
 
 .adr-status-superseded {
-  background-color: #e2e3e5;
-  color: #383d41;
+  background-color: var(--adr-superseded-bg);
+  color: var(--adr-superseded-fg);
 }
 
 /* --------------------------------------------------------------------------
@@ -49,8 +178,8 @@
   margin: 2px 3px;
   border-radius: 10px;
   font-size: 0.75em;
-  background-color: #e9ecef;
-  color: #495057;
+  background-color: var(--adr-tag-bg);
+  color: var(--adr-tag-fg);
 }
 
 /* --------------------------------------------------------------------------
@@ -64,36 +193,35 @@
   gap: 12px;
   padding: 12px 16px;
   margin-bottom: 24px;
-  background: #f8f9fa;
-  border: 1px solid #dee2e6;
-  border-left: 4px solid #6c757d;
+  background: var(--adr-surface);
+  border: 1px solid var(--adr-border);
+  border-left: 4px solid var(--adr-superseded-accent);
   border-radius: 4px;
 }
 
-.adr-meta .adr-status-accepted  { border-left-color: #28a745; }
-.adr-meta .adr-status-proposed  { border-left-color: #ffc107; }
-.adr-meta .adr-status-deprecated { border-left-color: #dc3545; }
-.adr-meta .adr-status-superseded { border-left-color: #6c757d; }
-
-/* Dynamically set the left border based on the first status badge */
+/* Dynamically set the left border based on the status badge */
 .adr-meta:has(.adr-status-accepted) {
-  border-left-color: #28a745;
+  border-left-color: var(--adr-accepted-accent);
 }
 .adr-meta:has(.adr-status-proposed) {
-  border-left-color: #ffc107;
+  border-left-color: var(--adr-proposed-accent);
 }
 .adr-meta:has(.adr-status-deprecated) {
-  border-left-color: #dc3545;
+  border-left-color: var(--adr-deprecated-accent);
 }
 .adr-meta:has(.adr-status-superseded) {
-  border-left-color: #6c757d;
+  border-left-color: var(--adr-superseded-accent);
 }
 
 .adr-date,
 .adr-authors,
 .adr-superseded-by {
   font-size: 0.9em;
-  color: #555;
+  color: var(--adr-text-muted);
+}
+
+.adr-superseded-by a {
+  color: var(--adr-link);
 }
 
 .adr-meta .adr-tags {
@@ -118,7 +246,7 @@
   top: 0;
   bottom: 0;
   width: 3px;
-  background: #dee2e6;
+  background: var(--adr-border);
   border-radius: 2px;
 }
 
@@ -141,43 +269,43 @@
   width: 19px;
   height: 19px;
   border-radius: 50%;
-  border: 3px solid #fff;
-  box-shadow: 0 0 0 2px #dee2e6;
+  border: 3px solid var(--adr-dot-ring);
+  box-shadow: 0 0 0 2px var(--adr-border);
   z-index: 1;
 }
 
 .adr-dot-accepted {
-  background-color: #28a745;
-  box-shadow: 0 0 0 2px #28a745;
+  background-color: var(--adr-accepted-accent);
+  box-shadow: 0 0 0 2px var(--adr-accepted-accent);
 }
 
 .adr-dot-proposed {
-  background-color: #ffc107;
-  box-shadow: 0 0 0 2px #ffc107;
+  background-color: var(--adr-proposed-accent);
+  box-shadow: 0 0 0 2px var(--adr-proposed-accent);
 }
 
 .adr-dot-deprecated {
-  background-color: #dc3545;
-  box-shadow: 0 0 0 2px #dc3545;
+  background-color: var(--adr-deprecated-accent);
+  box-shadow: 0 0 0 2px var(--adr-deprecated-accent);
 }
 
 .adr-dot-superseded {
-  background-color: #6c757d;
-  box-shadow: 0 0 0 2px #6c757d;
+  background-color: var(--adr-superseded-accent);
+  box-shadow: 0 0 0 2px var(--adr-superseded-accent);
 }
 
 /* Card content */
 .adr-timeline-content {
-  background: #fff;
-  border: 1px solid #e9ecef;
+  background: var(--adr-surface-card);
+  border: 1px solid var(--adr-border-card);
   border-radius: 6px;
   padding: 14px 18px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px var(--adr-shadow);
   transition: box-shadow 0.2s ease;
 }
 
 .adr-timeline-content:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--adr-shadow-hover);
 }
 
 /* Header: title + status badge */
@@ -191,12 +319,12 @@
 .adr-timeline-title {
   font-size: 1.05em;
   font-weight: 600;
-  color: #212529;
+  color: var(--adr-text);
   text-decoration: none;
 }
 
 .adr-timeline-title:hover {
-  color: #0056b3;
+  color: var(--adr-link);
   text-decoration: underline;
 }
 
@@ -204,13 +332,13 @@
 .adr-timeline-meta {
   margin-top: 4px;
   font-size: 0.85em;
-  color: #6c757d;
+  color: var(--adr-text-muted);
 }
 
 .adr-timeline-excerpt {
   margin: 8px 0 4px 0;
   font-size: 0.92em;
-  color: #495057;
+  color: var(--adr-text-secondary);
   line-height: 1.5;
 }
 

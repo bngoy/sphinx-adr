@@ -32,6 +32,10 @@ dependencies = [
 dev = [
     "pytest",
 ]
+examples = [
+    "pydata-sphinx-theme",
+    "sphinx-book-theme",
+]
 
 [project.urls]
 Homepage = "https://github.com/bngoy/sphinx-adr"

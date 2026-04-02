@@ -10,7 +10,8 @@ Inspired by [ablog](https://ablog.readthedocs.io/) (for the directive-based auth
 - **`.. adrlist::` directive** — generate a vertical timeline / decision log with filtering and sorting.
 - **Status badges** — color-coded pills for Proposed, Accepted, Deprecated, and Superseded.
 - **Timeline layout** — vertical timeline with status-colored dots, cards, excerpts, and tag pills.
-- **Works with any Sphinx theme** — ships its own CSS, looks best with modern themes like alabaster, furo, or pydata-sphinx-theme.
+- **Works with any Sphinx theme** — tested with alabaster, pydata-sphinx-theme, and sphinx-book-theme.
+- **Dark mode support** — automatically adapts to light/dark mode on pydata-sphinx-theme, sphinx-book-theme, and furo.
 - **Incremental & parallel safe** — integrates cleanly with Sphinx's build system.
 
 ## Quick start
@@ -128,6 +129,56 @@ Generates a timeline-based listing of all ADRs in the project.
 | `:tags:`   | *(all)*     | Comma-separated tags to filter by                      |
 | `:sort:`   | `date-desc` | Sort order: `date-desc`, `date-asc`, or `status`       |
 
+## Theme compatibility
+
+sphinx-adr ships CSS that works out of the box with all major Sphinx themes. Dark mode is supported automatically on themes that use `html[data-theme="dark"]` or `prefers-color-scheme: dark`.
+
+| Theme                  | Light mode | Dark mode | Notes                          |
+|------------------------|:----------:|:---------:|--------------------------------|
+| alabaster              | yes        | —         | Sphinx default, no dark mode   |
+| pydata-sphinx-theme    | yes        | yes       | Toggle via navbar switcher     |
+| sphinx-book-theme      | yes        | yes       | Built on pydata, same mechanism|
+| furo                   | yes        | yes       | Via `prefers-color-scheme`     |
+
+### pydata-sphinx-theme
+
+```python
+# conf.py
+extensions = ["sphinx_adr"]
+html_theme = "pydata_sphinx_theme"
+
+html_theme_options = {
+    "navbar_end": ["theme-switcher", "navbar-icon-links"],
+}
+```
+
+Install: `pip install pydata-sphinx-theme`
+
+### sphinx-book-theme
+
+```python
+# conf.py
+extensions = ["sphinx_adr"]
+html_theme = "sphinx_book_theme"
+
+html_theme_options = {
+    "repository_url": "https://github.com/your-org/your-repo",
+    "use_repository_button": True,
+}
+```
+
+Install: `pip install sphinx-book-theme`
+
+### furo
+
+```python
+# conf.py
+extensions = ["sphinx_adr"]
+html_theme = "furo"
+```
+
+Install: `pip install furo`
+
 ## Configuration
 
 In `conf.py` you can optionally customise the allowed statuses:
@@ -171,6 +222,23 @@ pipenv run sphinx-build -b html docs docs/_build/html
 
 Then open `docs/_build/html/index.html` in your browser to see the timeline and sample ADRs.
 
+### Build the theme examples
+
+Three self-contained examples are provided under `examples/`:
+
+```bash
+# alabaster (Sphinx default)
+pipenv run example-alabaster
+
+# pydata-sphinx-theme (with dark mode)
+pipenv run example-pydata
+
+# sphinx-book-theme (with dark mode)
+pipenv run example-book
+```
+
+Each writes output to `examples/<theme>/_build/html/`.
+
 ### Run the tests
 
 ```bash
@@ -204,6 +272,10 @@ sphinx-adr/
 │       ├── 0001-*.rst          # Sample ADRs
 │       ├── 0002-*.rst
 │       └── 0003-*.rst
+├── examples/                   # Theme-specific examples
+│   ├── alabaster/              # Default theme
+│   ├── pydata-theme/           # pydata-sphinx-theme (dark mode)
+│   └── book-theme/             # sphinx-book-theme (dark mode)
 └── tests/
     └── test_extension.py       # 7 tests covering directives, rendering, filtering
 ```

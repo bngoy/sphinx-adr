@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-sphinx-adr = {editable = true, extras = ["dev"], path = "."}
+sphinx-adr = {editable = true, extras = ["dev", "examples"], path = "."}
 
 [dev-packages]
 
@@ -14,3 +14,6 @@ python_version = "3"
 [scripts]
 docs = "sphinx-build -b html docs docs/_build/html"
 test = "python -m pytest tests/ -v"
+example-alabaster = "sphinx-build -b html examples/alabaster examples/alabaster/_build/html"
+example-pydata = "sphinx-build -b html examples/pydata-theme examples/pydata-theme/_build/html"
+example-book = "sphinx-build -b html examples/book-theme examples/book-theme/_build/html"
