@@ -70,12 +70,14 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Sync VERSION into __init__.py
+      - name: Stamp version from VERSION file
         run: |
           VERSION="${{ needs.tag.outputs.version }}"
+          sed -i "s/^version = .*/version = \"$VERSION\"/" pyproject.toml
           sed -i "s/^__version__ = .*/__version__ = \"$VERSION\"/" sphinx_adr/__init__.py
-          echo "Package version set to: $VERSION"
-          grep __version__ sphinx_adr/__init__.py
+          echo "Stamped version: $VERSION"
+          grep '^version' pyproject.toml
+          grep '__version__' sphinx_adr/__init__.py
 
       - name: Build package
         run: uv build
@@ -84,7 +86,6 @@ jobs:
         run: |
           VERSION="${{ needs.tag.outputs.version }}"
           ls dist/
-          # Verify the sdist/wheel filenames contain the correct version
           ls dist/ | grep "$VERSION" || { echo "::error::Built package does not match version $VERSION"; exit 1; }
 
       - name: Publish to PyPI

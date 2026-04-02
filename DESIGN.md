@@ -120,7 +120,7 @@ Teams using Sphinx for documentation lack a native way to capture Architecture D
 
 **Decision**: A plain `VERSION` file at the repo root holds the release version. `__init__.py` has a matching `__version__`. The CI auto-tag workflow reads VERSION to create git tags.
 
-**Rationale**: Separating the version from Python code makes it easy for CI scripts to read and bump. Hatchling reads `__version__` from `__init__.py` for building. The VERSION file drives the release pipeline.
+**Rationale**: Separating the version from Python code makes it easy for CI scripts to read and bump. At release time, the CI stamps both `pyproject.toml` and `__init__.py` from VERSION before `uv build`. The VERSION file drives the release pipeline.
 
 **Trade-off**: Two places to update (VERSION and `__init__.py`), but the release workflow validates they match.
 

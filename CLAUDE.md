@@ -10,8 +10,8 @@ Project context for Claude Code sessions.
 
 - **Python 3.13+** with **Sphinx >= 9.0**
 - **docutils** -- custom nodes and directives
-- **Hatchling** -- build backend (pyproject.toml)
-- **uv** -- package manager and task runner
+- **setuptools** -- build backend (pyproject.toml)
+- **uv** -- package manager, task runner, and build/publish tool
 - **ruff** -- linting and formatting
 - **pytest** -- test framework
 - **GitHub Actions** -- CI/CD (lint, test, auto-tag, PyPI release)
@@ -100,7 +100,8 @@ uv run sphinx-build -b html examples/pydata-theme examples/pydata-theme/_build/h
 
 ## Versioning
 
-- `VERSION` file at the repo root is the source of truth.
-- `sphinx_adr/__init__.py` has `__version__` which must match VERSION.
-- On PR merge to master, the `auto-tag.yml` workflow reads VERSION and creates a git tag `v{version}`.
-- On tag push, `release.yml` builds and publishes to PyPI.
+- `VERSION` file at the repo root is the single source of truth.
+- `pyproject.toml` (`version`) and `sphinx_adr/__init__.py` (`__version__`) carry the same value for local development.
+- At release time, the CI workflow stamps both files from VERSION before `uv build`, so the built package always matches.
+- On PR merge to master, `auto-tag.yml` reads VERSION, creates a `v{version}` git tag, then builds and publishes to PyPI.
+- `release.yml` is a fallback for manually pushed tags.
