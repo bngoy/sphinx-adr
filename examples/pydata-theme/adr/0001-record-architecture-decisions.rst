@@ -2,6 +2,7 @@ ADR-0001: Record Architecture Decisions
 =======================================
 
 .. adr::
+   :id: ADR-0001
    :status: Accepted
    :date: 2024-01-10
    :authors: Tech Lead

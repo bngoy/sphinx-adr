@@ -2,6 +2,7 @@ ADR-0004: Switch to MongoDB for Document Storage
 =================================================
 
 .. adr::
+   :id: ADR-0004
    :status: Proposed
    :date: 2024-04-18
    :authors: Diana, Charlie

@@ -25,6 +25,7 @@ class adr_list(nodes.General, nodes.Element):
 
 
 def visit_adr_meta_html(self, node):
+    adr_id = node.get("adr_id", "")
     status = node.get("status", "Proposed")
     status_lower = status.lower()
     date = node.get("date", "")
@@ -34,6 +35,12 @@ def visit_adr_meta_html(self, node):
     superseded_by_uri = node.get("superseded_by_uri", "")
 
     self.body.append('<div class="adr-meta">\n')
+
+    # ID badge
+    if adr_id:
+        self.body.append(
+            f'  <span class="adr-id">{adr_id}</span>\n'
+        )
 
     # Status badge
     self.body.append(

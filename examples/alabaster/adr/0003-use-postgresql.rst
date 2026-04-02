@@ -2,6 +2,7 @@ ADR-0003: Use PostgreSQL as Primary Database
 ============================================
 
 .. adr::
+   :id: ADR-0003
    :status: Superseded
    :date: 2024-03-05
    :authors: Charlie

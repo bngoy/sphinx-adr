@@ -2,6 +2,7 @@ ADR-0003: Use Python for Backend Services
 =========================================
 
 .. adr::
+   :id: ADR-0003
    :status: Proposed
    :date: 2024-03-10
    :authors: Bob, Diana

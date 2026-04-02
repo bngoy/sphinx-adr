@@ -46,6 +46,7 @@ class AdrDirective(SphinxDirective):
     required_arguments = 0
     optional_arguments = 0
     option_spec = {
+        "id": directives.unchanged_required,
         "status": _status_option,
         "date": directives.unchanged_required,
         "authors": directives.unchanged,
@@ -56,6 +57,15 @@ class AdrDirective(SphinxDirective):
     def run(self) -> list[nodes.Node]:
         env = self.state.document.settings.env
         docname = env.docname
+
+        # :id: is required — Sphinx will emit a warning if missing
+        adr_id = self.options.get("id", "")
+        if not adr_id:
+            msg = self.state.document.reporter.warning(
+                "ADR directive missing required :id: option",
+                line=self.lineno,
+            )
+            return [msg]
 
         status = self.options.get("status", "Proposed")
         date = self.options.get("date", "")
@@ -72,6 +82,7 @@ class AdrDirective(SphinxDirective):
 
         env.adr_all_adrs[docname] = {
             "docname": docname,
+            "id": adr_id,
             "status": status,
             "date": date,
             "authors": authors,
@@ -82,6 +93,7 @@ class AdrDirective(SphinxDirective):
 
         # Create the metadata banner node
         meta_node = adr_meta()
+        meta_node["adr_id"] = adr_id
         meta_node["status"] = status
         meta_node["date"] = date
         meta_node["authors"] = authors

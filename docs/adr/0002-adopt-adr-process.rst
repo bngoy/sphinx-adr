@@ -2,6 +2,7 @@ ADR-0002: Adopt ADR Process
 ===========================
 
 .. adr::
+   :id: ADR-0002
    :status: Accepted
    :date: 2024-02-01
    :authors: Alice, Charlie

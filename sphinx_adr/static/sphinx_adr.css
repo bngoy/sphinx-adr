@@ -46,6 +46,10 @@
   --adr-tag-bg: #e9ecef;
   --adr-tag-fg: #495057;
 
+  /* ID badge */
+  --adr-id-bg: #d1ecf1;
+  --adr-id-fg: #0c5460;
+
   /* Timeline dot border (matches card bg so it "punches through" the line) */
   --adr-dot-ring: #fff;
 }
@@ -86,6 +90,9 @@ html[data-theme="dark"] {
 
   --adr-tag-bg: #343a40;
   --adr-tag-fg: #adb5bd;
+
+  --adr-id-bg: #153a42;
+  --adr-id-fg: #7ec8d8;
 
   --adr-dot-ring: #25292e;
 }
@@ -128,6 +135,9 @@ html[data-theme="dark"] {
     --adr-tag-bg: #343a40;
     --adr-tag-fg: #adb5bd;
 
+    --adr-id-bg: #153a42;
+    --adr-id-fg: #7ec8d8;
+
     --adr-dot-ring: #25292e;
   }
 }
@@ -166,6 +176,23 @@ html[data-theme="dark"] {
 .adr-status-superseded {
   background-color: var(--adr-superseded-bg);
   color: var(--adr-superseded-fg);
+}
+
+/* --------------------------------------------------------------------------
+   ID badge
+   -------------------------------------------------------------------------- */
+
+.adr-id {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.78em;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  background-color: var(--adr-id-bg);
+  color: var(--adr-id-fg);
+  white-space: nowrap;
+  letter-spacing: 0.02em;
 }
 
 /* --------------------------------------------------------------------------
@@ -507,6 +534,12 @@ html[data-theme="dark"] {
 
 .adr-sidebar-entry:hover .adr-sidebar-title {
   color: var(--adr-link);
+}
+
+.adr-sidebar-info .adr-id {
+  font-size: 0.85em;
+  padding: 1px 5px;
+  border-radius: 3px;
 }
 
 .adr-sidebar-info .adr-status {

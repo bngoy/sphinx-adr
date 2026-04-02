@@ -2,6 +2,7 @@ ADR-0001: Use Sphinx for Documentation
 ======================================
 
 .. adr::
+   :id: ADR-0001
    :status: Accepted
    :date: 2024-01-15
    :authors: Alice, Bob

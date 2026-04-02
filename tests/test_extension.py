@@ -41,6 +41,7 @@ def test_adr_directive_basic(make_project, tmp_path):
                 "ADR-1: Test Decision\n"
                 "====================\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0001\n"
                 "   :status: Accepted\n"
                 "   :date: 2024-01-15\n"
                 "   :authors: Alice\n"
@@ -55,6 +56,7 @@ def test_adr_directive_basic(make_project, tmp_path):
     assert hasattr(app.env, "adr_all_adrs")
     assert "adr1" in app.env.adr_all_adrs
     adr = app.env.adr_all_adrs["adr1"]
+    assert adr["id"] == "ADR-0001"
     assert adr["status"] == "Accepted"
     assert adr["date"] == "2024-01-15"
     assert adr["authors"] == "Alice"
@@ -71,6 +73,7 @@ def test_adr_directive_status_validation(make_project, tmp_path):
                 "ADR-1\n"
                 "=====\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0001\n"
                 "   :status: Invalid\n"
             ),
         }
@@ -102,6 +105,7 @@ def test_adr_meta_renders_in_html(make_project, tmp_path):
                 "ADR-1: My Decision\n"
                 "===================\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0001\n"
                 "   :status: Proposed\n"
                 "   :date: 2024-06-01\n"
                 "   :tags: api, backend\n\n"
@@ -113,6 +117,8 @@ def test_adr_meta_renders_in_html(make_project, tmp_path):
     html = (Path(app.outdir) / "adr1.html").read_text()
 
     assert 'class="adr-meta"' in html
+    assert 'class="adr-id"' in html
+    assert "ADR-0001" in html
     assert "adr-status-proposed" in html
     assert "2024-06-01" in html
     assert "api" in html
@@ -139,12 +145,14 @@ def test_adrlist_renders_timeline(make_project, tmp_path):
             "adr1.rst": (
                 "ADR-1\n=====\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0001\n"
                 "   :status: Accepted\n"
                 "   :date: 2024-01-01\n"
             ),
             "adr2.rst": (
                 "ADR-2\n=====\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0002\n"
                 "   :status: Proposed\n"
                 "   :date: 2024-02-01\n"
             ),
@@ -157,6 +165,8 @@ def test_adrlist_renders_timeline(make_project, tmp_path):
     assert "adr-timeline-item" in html
     assert "adr-dot-accepted" in html
     assert "adr-dot-proposed" in html
+    assert "ADR-0001" in html
+    assert "ADR-0002" in html
 
 
 def test_adrlist_filter_by_status(make_project, tmp_path):
@@ -176,6 +186,7 @@ def test_adrlist_filter_by_status(make_project, tmp_path):
                 "ADR-1: Accepted One\n"
                 "===================\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0001\n"
                 "   :status: Accepted\n"
                 "   :date: 2024-01-01\n"
             ),
@@ -183,6 +194,7 @@ def test_adrlist_filter_by_status(make_project, tmp_path):
                 "ADR-2: Proposed One\n"
                 "===================\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0002\n"
                 "   :status: Proposed\n"
                 "   :date: 2024-02-01\n"
             ),
@@ -216,6 +228,7 @@ def test_adrlist_sort_by_date(make_project, tmp_path):
                 "ADR-1: Older\n"
                 "============\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0001\n"
                 "   :status: Accepted\n"
                 "   :date: 2024-01-01\n"
             ),
@@ -223,6 +236,7 @@ def test_adrlist_sort_by_date(make_project, tmp_path):
                 "ADR-2: Newer\n"
                 "============\n\n"
                 ".. adr::\n"
+                "   :id: ADR-0002\n"
                 "   :status: Accepted\n"
                 "   :date: 2024-06-01\n"
             ),

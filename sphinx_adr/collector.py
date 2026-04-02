@@ -152,6 +152,7 @@ def inject_adr_nav_context(
 
         entries.append(
             {
+                "id": adr.get("id", ""),
                 "title": title_text,
                 "uri": uri,
                 "status": status,
@@ -174,6 +175,7 @@ def _render_timeline(
     lines = ['<div class="adr-timeline">']
 
     for adr in adrs:
+        adr_id = adr.get("id", "")
         status = adr.get("status", "Proposed")
         status_lower = status.lower()
         date = adr.get("date", "")
@@ -192,6 +194,10 @@ def _render_timeline(
         lines.append(f'    <div class="adr-timeline-dot adr-dot-{status_lower}"></div>')
         lines.append('    <div class="adr-timeline-content">')
         lines.append('      <div class="adr-timeline-header">')
+        if adr_id:
+            lines.append(
+                f'        <span class="adr-id">{adr_id}</span>'
+            )
         lines.append(
             f'        <a href="{uri}" class="adr-timeline-title">{title}</a>'
         )

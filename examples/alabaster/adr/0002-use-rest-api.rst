@@ -2,6 +2,7 @@ ADR-0002: Use REST API for Service Communication
 =================================================
 
 .. adr::
+   :id: ADR-0002
    :status: Accepted
    :date: 2024-02-20
    :authors: Alice, Bob

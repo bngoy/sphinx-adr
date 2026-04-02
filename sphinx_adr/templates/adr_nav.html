@@ -9,7 +9,10 @@
        title="{{ entry.title }}">
       <span class="adr-sidebar-dot adr-dot-{{ entry.status_lower }}"></span>
       <span class="adr-sidebar-info">
-        <span class="adr-sidebar-title">{{ entry.title }}</span>
+        <span class="adr-sidebar-title">
+          {%- if entry.id %}<span class="adr-id">{{ entry.id }}</span> {% endif -%}
+          {{ entry.title }}
+        </span>
         <span class="adr-status adr-status-{{ entry.status_lower }}">{{ entry.status }}</span>
       </span>
     </a>
