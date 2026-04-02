@@ -25,7 +25,7 @@ def make_project(tmp_path: Path):
     """Factory fixture that creates a Sphinx project with given RST files."""
 
     def _factory(files: dict[str, str], conf_extra: str = "") -> Path:
-        srcdir = _write_conf(tmp_path, conf_extra)
+        _write_conf(tmp_path, conf_extra)
         for name, content in files.items():
             p = tmp_path / name
             p.parent.mkdir(parents=True, exist_ok=True)

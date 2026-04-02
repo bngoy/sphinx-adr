@@ -38,14 +38,10 @@ def visit_adr_meta_html(self, node):
 
     # ID badge
     if adr_id:
-        self.body.append(
-            f'  <span class="adr-id">{adr_id}</span>\n'
-        )
+        self.body.append(f'  <span class="adr-id">{adr_id}</span>\n')
 
     # Status badge
-    self.body.append(
-        f'  <span class="adr-status adr-status-{status_lower}">{status}</span>\n'
-    )
+    self.body.append(f'  <span class="adr-status adr-status-{status_lower}">{status}</span>\n')
 
     # Date
     if date:
@@ -65,9 +61,7 @@ def visit_adr_meta_html(self, node):
             )
         else:
             self.body.append(
-                f'  <span class="adr-superseded-by">'
-                f"Superseded by: {superseded_by}"
-                f"</span>\n"
+                f'  <span class="adr-superseded-by">Superseded by: {superseded_by}</span>\n'
             )
 
     # Tags

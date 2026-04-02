@@ -6,13 +6,15 @@ Inspired by [ablog](https://ablog.readthedocs.io/) (for the directive-based auth
 
 ## Features
 
-- **`.. adr::` directive** — mark any Sphinx page as an ADR with structured metadata (status, date, authors, tags).
-- **`.. adrlist::` directive** — generate a vertical timeline / decision log with filtering and sorting.
-- **Status badges** — color-coded pills for Proposed, Accepted, Deprecated, and Superseded.
-- **Timeline layout** — vertical timeline with status-colored dots, cards, excerpts, and tag pills.
-- **Works with any Sphinx theme** — tested with alabaster, pydata-sphinx-theme, and sphinx-book-theme.
-- **Dark mode support** — automatically adapts to light/dark mode on pydata-sphinx-theme, sphinx-book-theme, and furo.
-- **Incremental & parallel safe** — integrates cleanly with Sphinx's build system.
+- **`.. adr::` directive** -- mark any Sphinx page as an ADR with structured metadata (id, status, date, authors, tags).
+- **`.. adrlist::` directive** -- generate a vertical timeline / decision log with filtering and sorting.
+- **Sidebar navigation** -- compact timeline sidebar on ADR pages (ablog-style `html_sidebars` pattern).
+- **Status badges** -- color-coded pills for Proposed, Accepted, Deprecated, and Superseded.
+- **ID badges** -- teal monospace badge for each record's identifier, visually distinct from status and tags.
+- **Timeline layout** -- vertical timeline with status-colored glowing dots, cards, excerpts, and tag pills.
+- **Works with any Sphinx theme** -- tested with alabaster, pydata-sphinx-theme, and sphinx-book-theme.
+- **Dark mode support** -- automatically adapts to light/dark mode on pydata-sphinx-theme, sphinx-book-theme, and furo.
+- **Incremental & parallel safe** -- integrates cleanly with Sphinx's build system.
 
 ## Quick start
 
@@ -22,20 +24,20 @@ Inspired by [ablog](https://ablog.readthedocs.io/) (for the directive-based auth
 pip install sphinx-adr
 ```
 
-Or for local development with Pipenv (see [Development](#development)):
-
-```bash
-pipenv install -e ".[dev]"
-```
-
 ### 2. Enable the extension
 
 In your Sphinx `conf.py`:
 
 ```python
-extensions = [
-    "sphinx_adr",
-]
+extensions = ["sphinx_adr"]
+
+# Path to ADR documents (default: "adr")
+adr_path = "adr"
+
+# Show the ADR sidebar only on ADR pages (ablog-style pattern)
+html_sidebars = {
+    "adr/*": ["adr_nav.html"],
+}
 ```
 
 ### 3. Write an ADR
@@ -47,6 +49,7 @@ ADR-0001: Use Sphinx for Documentation
 =======================================
 
 .. adr::
+   :id: ADR-0001
    :status: Accepted
    :date: 2024-01-15
    :authors: Alice, Bob
@@ -61,25 +64,11 @@ We need a documentation system that supports multiple output formats,
 is well-integrated with Python projects, and allows us to write
 documentation alongside the code.
 
-Considered Options
-------------------
-
-1. **Sphinx** — mature Python documentation generator.
-2. **MkDocs** — Markdown-based static site generator.
-3. **Docusaurus** — React-based documentation platform.
-
 Decision Outcome
 ----------------
 
 Chosen option: **Sphinx**, because it is the de-facto standard for
 Python projects and has a rich extension ecosystem.
-
-Consequences
-------------
-
-**Positive:** team familiarity, Read the Docs integration.
-
-**Negative:** steeper learning curve for RST newcomers.
 ```
 
 ### 4. Create a decision log page
@@ -103,19 +92,20 @@ Architecture Decision Log
 sphinx-build -b html docs docs/_build/html
 ```
 
-## Directives reference
+## Directive reference
 
 ### `.. adr::`
 
 Marks the current page as an ADR. Place it near the top of the document, right after the title.
 
-| Option            | Required | Description                                                        |
-|-------------------|----------|--------------------------------------------------------------------|
-| `:status:`        | yes      | One of `Proposed`, `Accepted`, `Deprecated`, `Superseded`          |
-| `:date:`          | no       | Date string, e.g. `2024-01-15`                                     |
-| `:authors:`       | no       | Comma-separated author names                                       |
-| `:tags:`          | no       | Comma-separated tags for categorisation                            |
-| `:superseded-by:` | no       | Docname of the ADR that supersedes this one (when status is Superseded) |
+| Option            | Required | Description                                                            |
+|-------------------|----------|------------------------------------------------------------------------|
+| `:id:`            | **yes**  | Unique identifier for the ADR, e.g. `ADR-0001`                        |
+| `:status:`        | **yes**  | One of `Proposed`, `Accepted`, `Deprecated`, `Superseded`              |
+| `:date:`          | no       | Date string, e.g. `2024-01-15`                                        |
+| `:authors:`       | no       | Comma-separated author names                                          |
+| `:tags:`          | no       | Comma-separated tags for categorisation                                |
+| `:superseded-by:` | no       | Docname of the ADR that supersedes this one (when status is Superseded)|
 
 The directive body is used as a short excerpt displayed in the timeline listing.
 
@@ -123,163 +113,124 @@ The directive body is used as a short excerpt displayed in the timeline listing.
 
 Generates a timeline-based listing of all ADRs in the project.
 
-| Option     | Default     | Description                                            |
-|------------|-------------|--------------------------------------------------------|
+| Option     | Default     | Description                                                    |
+|------------|-------------|----------------------------------------------------------------|
 | `:status:` | *(all)*     | Comma-separated statuses to include, e.g. `Accepted, Proposed` |
-| `:tags:`   | *(all)*     | Comma-separated tags to filter by                      |
-| `:sort:`   | `date-desc` | Sort order: `date-desc`, `date-asc`, or `status`       |
-
-## Theme compatibility
-
-sphinx-adr ships CSS that works out of the box with all major Sphinx themes. Dark mode is supported automatically on themes that use `html[data-theme="dark"]` or `prefers-color-scheme: dark`.
-
-| Theme                  | Light mode | Dark mode | Notes                          |
-|------------------------|:----------:|:---------:|--------------------------------|
-| alabaster              | yes        | —         | Sphinx default, no dark mode   |
-| pydata-sphinx-theme    | yes        | yes       | Toggle via navbar switcher     |
-| sphinx-book-theme      | yes        | yes       | Built on pydata, same mechanism|
-| furo                   | yes        | yes       | Via `prefers-color-scheme`     |
-
-### pydata-sphinx-theme
-
-```python
-# conf.py
-extensions = ["sphinx_adr"]
-html_theme = "pydata_sphinx_theme"
-
-html_theme_options = {
-    "navbar_end": ["theme-switcher", "navbar-icon-links"],
-}
-```
-
-Install: `pip install pydata-sphinx-theme`
-
-### sphinx-book-theme
-
-```python
-# conf.py
-extensions = ["sphinx_adr"]
-html_theme = "sphinx_book_theme"
-
-html_theme_options = {
-    "repository_url": "https://github.com/your-org/your-repo",
-    "use_repository_button": True,
-}
-```
-
-Install: `pip install sphinx-book-theme`
-
-### furo
-
-```python
-# conf.py
-extensions = ["sphinx_adr"]
-html_theme = "furo"
-```
-
-Install: `pip install furo`
+| `:tags:`   | *(all)*     | Comma-separated tags to filter by                              |
+| `:sort:`   | `date-desc` | Sort order: `date-desc`, `date-asc`, or `status`               |
 
 ## Configuration
 
-In `conf.py` you can optionally customise the allowed statuses:
+| Config value    | Default                                              | Description                        |
+|-----------------|------------------------------------------------------|------------------------------------|
+| `adr_path`      | `"adr"`                                              | Directory containing ADR documents |
+| `adr_statuses`  | `["Proposed", "Accepted", "Deprecated", "Superseded"]` | Allowed status values            |
+
+### Sidebar setup (ablog-style)
+
+The extension provides an `adr_nav.html` sidebar template. Use Sphinx's `html_sidebars` to control which pages display it:
 
 ```python
-adr_statuses = ["Proposed", "Accepted", "Deprecated", "Superseded"]
+# Show ADR sidebar only on pages under adr/
+html_sidebars = {
+    "adr/*": ["adr_nav.html"],
+}
 ```
+
+Regular pages keep their normal theme sidebar. This follows the same pattern as [ablog](https://ablog.readthedocs.io/).
+
+## Interactive controls
+
+### Timeline
+
+- **Hover** on a timeline card to see an elevated shadow and glowing status dot.
+- **Click** the title link to navigate to the full ADR document.
+- **Filter** ADRs by status or tags using `.. adrlist::` options.
+
+### Sidebar navigation
+
+- **Current page** is highlighted with bold text and link color.
+- **Hover** on any entry to see the title highlighted and dot glow.
+- Each entry shows the **ID badge**, **title**, and **status pill** at a glance.
+
+## Theme compatibility
+
+| Theme                  | Light mode | Dark mode | Notes                          |
+|------------------------|:----------:|:---------:|--------------------------------|
+| alabaster              | yes        | --        | Sphinx default, no dark mode   |
+| pydata-sphinx-theme    | yes        | yes       | Toggle via navbar switcher     |
+| sphinx-book-theme      | yes        | yes       | Built on pydata, same mechanism|
+| furo                   | yes        | yes       | Via `prefers-color-scheme`     |
 
 ## Development
 
 ### Prerequisites
 
 - Python 3.9+
-- [Pipenv](https://pipenv.pypa.io/)
+- [uv](https://docs.astral.sh/uv/)
 
 ### Setup
 
 ```bash
-# Clone the repo
 git clone https://github.com/bngoy/sphinx-adr.git
 cd sphinx-adr
 
-# Create a virtual environment and install dependencies
-pipenv install -e ".[dev]"
-
-# Activate the shell
-pipenv shell
+# Install in development mode
+uv sync --extra dev
 ```
 
-### Build the demo docs
+### Common commands
 
 ```bash
-pipenv run docs
-```
+# Run tests
+uv run pytest tests/ -v
 
-Or manually:
+# Lint and format
+uv run ruff check .
+uv run ruff format .
 
-```bash
-pipenv run sphinx-build -b html docs docs/_build/html
-```
+# Build demo docs
+uv run sphinx-build -b html docs docs/_build/html
 
-Then open `docs/_build/html/index.html` in your browser to see the timeline and sample ADRs.
-
-### Build the theme examples
-
-Three self-contained examples are provided under `examples/`:
-
-```bash
-# alabaster (Sphinx default)
-pipenv run example-alabaster
-
-# pydata-sphinx-theme (with dark mode)
-pipenv run example-pydata
-
-# sphinx-book-theme (with dark mode)
-pipenv run example-book
-```
-
-Each writes output to `examples/<theme>/_build/html/`.
-
-### Run the tests
-
-```bash
-pipenv run test
-```
-
-Or manually:
-
-```bash
-pipenv run python -m pytest tests/ -v
+# Build theme examples (requires examples extra)
+uv sync --extra examples
+uv run sphinx-build -b html examples/pydata-theme examples/pydata-theme/_build/html
+uv run sphinx-build -b html examples/book-theme examples/book-theme/_build/html
+uv run sphinx-build -b html examples/alabaster examples/alabaster/_build/html
 ```
 
 ### Project structure
 
 ```
 sphinx-adr/
-├── pyproject.toml              # Package metadata and build config
-├── Pipfile                     # Pipenv dependency specification
+├── VERSION                     # Single source of truth for package version
+├── pyproject.toml              # Package metadata, build config, ruff config, uv scripts
 ├── sphinx_adr/
-│   ├── __init__.py             # Extension setup, config values
+│   ├── __init__.py             # Extension setup, config values, version
 │   ├── directives.py           # AdrDirective, AdrListDirective
 │   ├── nodes.py                # Custom docutils nodes (adr_meta, adr_list)
 │   ├── collector.py            # Metadata collection & timeline rendering
+│   ├── templates/
+│   │   └── adr_nav.html        # Sidebar navigation Jinja2 template
 │   └── static/
-│       └── sphinx_adr.css      # Timeline styling, status badges
+│       └── sphinx_adr.css      # Timeline styling, status/ID badges, dark mode
 ├── docs/                       # Demo site (dogfoods the extension)
 │   ├── conf.py
 │   ├── index.rst
-│   └── adr/
-│       ├── index.rst           # Decision log with .. adrlist::
-│       ├── 0001-*.rst          # Sample ADRs
-│       ├── 0002-*.rst
-│       └── 0003-*.rst
+│   └── adr/                    # Sample ADRs
 ├── examples/                   # Theme-specific examples
-│   ├── alabaster/              # Default theme
-│   ├── pydata-theme/           # pydata-sphinx-theme (dark mode)
-│   └── book-theme/             # sphinx-book-theme (dark mode)
-└── tests/
-    └── test_extension.py       # 7 tests covering directives, rendering, filtering
+│   ├── alabaster/
+│   ├── pydata-theme/
+│   └── book-theme/
+├── tests/
+│   ├── conftest.py             # make_project fixture
+│   └── test_extension.py       # 7 tests
+└── .github/workflows/
+    ├── ci.yml                  # Lint + test on every push/PR
+    ├── auto-tag.yml            # Tag repo from VERSION on PR merge
+    └── release.yml             # Build and publish to PyPI on tag
 ```
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE).
+Apache 2.0 -- see [LICENSE](LICENSE).

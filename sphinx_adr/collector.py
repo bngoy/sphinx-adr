@@ -87,11 +87,7 @@ def process_adr_lists(app: Sphinx, doctree: nodes.document, docname: str) -> Non
         if filter_status:
             adrs = [a for a in adrs if a["status"].lower() in filter_status]
         if filter_tags:
-            adrs = [
-                a
-                for a in adrs
-                if any(t.lower() in filter_tags for t in a.get("tags", []))
-            ]
+            adrs = [a for a in adrs if any(t.lower() in filter_tags for t in a.get("tags", []))]
 
         adrs = _sort_adrs(adrs, sort_key)
 
@@ -104,12 +100,8 @@ def process_adr_lists(app: Sphinx, doctree: nodes.document, docname: str) -> Non
         # Resolve superseded-by URIs
         for adr in adrs:
             sup = adr.get("superseded_by", "")
-            if sup:
-                # Try to resolve as a docname
-                if sup in all_adrs:
-                    adr["superseded_by_title"] = all_adrs[sup].get(
-                        "title", sup
-                    )
+            if sup and sup in all_adrs:
+                adr["superseded_by_title"] = all_adrs[sup].get("title", sup)
 
         # Build the timeline HTML
         html = _render_timeline(app, adrs, docname)
@@ -165,9 +157,7 @@ def inject_adr_nav_context(
     context["adr_nav_entries"] = entries
 
 
-def _render_timeline(
-    app: Sphinx, adrs: list[dict], current_docname: str
-) -> str:
+def _render_timeline(app: Sphinx, adrs: list[dict], current_docname: str) -> str:
     """Render ADRs as a vertical timeline."""
     if not adrs:
         return '<div class="adr-timeline"><p>No ADRs found.</p></div>'
@@ -195,15 +185,9 @@ def _render_timeline(
         lines.append('    <div class="adr-timeline-content">')
         lines.append('      <div class="adr-timeline-header">')
         if adr_id:
-            lines.append(
-                f'        <span class="adr-id">{adr_id}</span>'
-            )
-        lines.append(
-            f'        <a href="{uri}" class="adr-timeline-title">{title}</a>'
-        )
-        lines.append(
-            f'        <span class="adr-status adr-status-{status_lower}">{status}</span>'
-        )
+            lines.append(f'        <span class="adr-id">{adr_id}</span>')
+        lines.append(f'        <a href="{uri}" class="adr-timeline-title">{title}</a>')
+        lines.append(f'        <span class="adr-status adr-status-{status_lower}">{status}</span>')
         lines.append("      </div>")
 
         # Meta line
@@ -214,9 +198,7 @@ def _render_timeline(
             meta_parts.append(f'<span class="adr-timeline-authors">{authors}</span>')
         if meta_parts:
             lines.append(
-                '      <div class="adr-timeline-meta">'
-                + " &middot; ".join(meta_parts)
-                + "</div>"
+                '      <div class="adr-timeline-meta">' + " &middot; ".join(meta_parts) + "</div>"
             )
 
         # Excerpt

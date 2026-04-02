@@ -31,12 +31,7 @@ def test_adr_directive_basic(make_project, tmp_path):
     """The ``adr`` directive stores metadata and the build succeeds."""
     srcdir = make_project(
         {
-            "index.rst": (
-                "Title\n"
-                "=====\n\n"
-                ".. toctree::\n\n"
-                "   adr1\n"
-            ),
+            "index.rst": ("Title\n=====\n\n.. toctree::\n\n   adr1\n"),
             "adr1.rst": (
                 "ADR-1: Test Decision\n"
                 "====================\n\n"
@@ -69,13 +64,7 @@ def test_adr_directive_status_validation(make_project, tmp_path):
     srcdir = make_project(
         {
             "index.rst": "Title\n=====\n\n.. toctree::\n\n   adr1\n",
-            "adr1.rst": (
-                "ADR-1\n"
-                "=====\n\n"
-                ".. adr::\n"
-                "   :id: ADR-0001\n"
-                "   :status: Invalid\n"
-            ),
+            "adr1.rst": ("ADR-1\n=====\n\n.. adr::\n   :id: ADR-0001\n   :status: Invalid\n"),
         }
     )
     # The build should produce a warning/error about invalid status
@@ -134,14 +123,7 @@ def test_adrlist_renders_timeline(make_project, tmp_path):
     """The ``adrlist`` directive generates a timeline in HTML."""
     srcdir = make_project(
         {
-            "index.rst": (
-                "Title\n"
-                "=====\n\n"
-                ".. adrlist::\n\n"
-                ".. toctree::\n\n"
-                "   adr1\n"
-                "   adr2\n"
-            ),
+            "index.rst": ("Title\n=====\n\n.. adrlist::\n\n.. toctree::\n\n   adr1\n   adr2\n"),
             "adr1.rst": (
                 "ADR-1\n=====\n\n"
                 ".. adr::\n"
@@ -216,14 +198,7 @@ def test_adrlist_sort_by_date(make_project, tmp_path):
     """ADRs are sorted by date descending by default."""
     srcdir = make_project(
         {
-            "index.rst": (
-                "Title\n"
-                "=====\n\n"
-                ".. adrlist::\n\n"
-                ".. toctree::\n\n"
-                "   adr1\n"
-                "   adr2\n"
-            ),
+            "index.rst": ("Title\n=====\n\n.. adrlist::\n\n.. toctree::\n\n   adr1\n   adr2\n"),
             "adr1.rst": (
                 "ADR-1: Older\n"
                 "============\n\n"

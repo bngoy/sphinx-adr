@@ -19,16 +19,16 @@ from .nodes import (
     adr_list,
     adr_meta,
     depart_adr_list_html,
+    depart_adr_list_text,
     depart_adr_meta_html,
     depart_adr_meta_text,
-    depart_adr_list_text,
     visit_adr_list_html,
     visit_adr_list_text,
     visit_adr_meta_html,
     visit_adr_meta_text,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.0.1"
 
 
 def setup(app: Sphinx) -> dict[str, Any]:
