@@ -263,30 +263,22 @@ env-merge-info(other)   →  Merge other.adr_all_adrs into env.adr_all_adrs
                     PR merged to master
                             │
                             ▼
-                    ┌───────────────┐
-                    │ auto-tag.yml  │
-                    │               │
-                    │  1. Checkout  │
-                    │  2. Read      │
-                    │     VERSION   │
-                    │  3. Check if  │
-                    │     tag exists│
-                    │  4. Create    │
-                    │     v{ver}    │
-                    │     tag       │
-                    └───────┬───────┘
-                            │ (tag pushed)
-                            ▼
-                    ┌───────────────┐
-                    │ release.yml   │
-                    │               │
-                    │  1. Checkout  │
-                    │  2. uv build  │
-                    │  3. twine     │
-                    │     upload    │
-                    │     (PyPI)    │
-                    │  4. GH release│
-                    └───────────────┘
+                    ┌───────────────────────────────────────┐
+                    │           auto-tag.yml                 │
+                    │                                        │
+                    │  [tag job]            [release job]    │
+                    │  1. Checkout          needs: tag       │
+                    │  2. Read VERSION      1. Checkout @tag │
+                    │  3. Check if          2. uv build      │
+                    │     tag exists        3. uv publish    │
+                    │  4. Create & push ──▶    (PyPI)        │
+                    │     v{ver} tag        4. GH release    │
+                    └───────────────────────────────────────┘
+
+Note: Tags created by GITHUB_TOKEN do not trigger other
+workflows. The release job runs in the same workflow as the
+tag job to work around this GitHub Actions limitation.
+release.yml is kept as a fallback for manually pushed tags.
 
 Secrets required:
   - PYPI_API_TOKEN: PyPI API token for publishing
