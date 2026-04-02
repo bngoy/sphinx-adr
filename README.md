@@ -166,7 +166,7 @@ Regular pages keep their normal theme sidebar. This follows the same pattern as 
 
 ### Prerequisites
 
-- Python 3.9+
+- Python 3.13+
 - [uv](https://docs.astral.sh/uv/)
 
 ### Setup

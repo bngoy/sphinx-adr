@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Sphinx extension to document Architecture Decision Records (ADRs)"
 readme = "README.md"
 license = "Apache-2.0"
-requires-python = ">=3.9"
+requires-python = ">=3.13"
 authors = [
     { name = "sphinx-adr contributors" },
 ]
@@ -25,7 +25,7 @@ classifiers = [
     "Topic :: Software Development :: Documentation",
 ]
 dependencies = [
-    "sphinx>=7.0",
+    "sphinx>=8.0",
 ]
 
 [project.optional-dependencies]
@@ -69,7 +69,7 @@ example-book = "sphinx-build -b html examples/book-theme examples/book-theme/_bu
 # ---------------------------------------------------------------------------
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py313"
 line-length = 100
 
 [tool.ruff.lint]
