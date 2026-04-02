@@ -40,6 +40,11 @@ def setup(app: Sphinx) -> dict[str, Any]:
         ["Proposed", "Accepted", "Deprecated", "Superseded"],
         "env",
     )
+    app.add_config_value(
+        "adr_path",
+        "adr",
+        "env",
+    )
 
     # -- Custom nodes --------------------------------------------------------
     app.add_node(
@@ -63,21 +68,17 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.connect("env-purge-doc", purge_adr_doc)
     app.connect("env-merge-info", merge_adr_info)
     app.connect("html-page-context", inject_adr_nav_context)
-    app.connect("builder-inited", _setup_sidebar)
 
     # -- Templates -----------------------------------------------------------
     templates_dir = os.path.join(os.path.dirname(__file__), "templates")
     app.config.templates_path.append(templates_dir)
 
     # -- Static files --------------------------------------------------------
-    static_dir = os.path.join(os.path.dirname(__file__), "static")
     app.connect(
         "builder-inited",
         lambda app: app.config._raw_config.setdefault("html_static_path", []),
     )
     app.add_css_file("sphinx_adr.css")
-
-    # Register the static directory so Sphinx copies it
     app.connect("builder-inited", _add_static_path)
 
     return {
@@ -85,22 +86,6 @@ def setup(app: Sphinx) -> dict[str, Any]:
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
-
-
-def _setup_sidebar(app: Sphinx) -> None:
-    """Prepend the ADR timeline sidebar to html_sidebars for all pages."""
-    sidebar_file = "adr_nav.html"
-
-    sidebars = app.config.html_sidebars
-    if not sidebars:
-        # No custom sidebars configured — set a default that works across themes
-        app.config.html_sidebars = {"**": [sidebar_file]}
-    else:
-        # Prepend our sidebar to every existing pattern
-        for pattern in list(sidebars.keys()):
-            templates = sidebars[pattern]
-            if sidebar_file not in templates:
-                sidebars[pattern] = [sidebar_file] + list(templates)
 
 
 def _add_static_path(app: Sphinx) -> None:

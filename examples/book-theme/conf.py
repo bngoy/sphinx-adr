@@ -16,3 +16,9 @@ html_theme_options = {
     "repository_url": "https://github.com/bngoy/sphinx-adr",
     "use_repository_button": True,
 }
+
+adr_path = "adr"
+
+html_sidebars = {
+    "adr/*": ["adr_nav.html"],
+}

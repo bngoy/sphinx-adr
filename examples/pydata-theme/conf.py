@@ -17,3 +17,11 @@ html_theme_options = {
     # Show the dark mode toggle in the navbar
     "navbar_end": ["theme-switcher", "navbar-icon-links"],
 }
+
+# ADR path — the directory containing ADR documents
+adr_path = "adr"
+
+# Show the ADR timeline sidebar on ADR pages (index + individual records)
+html_sidebars = {
+    "adr/*": ["adr_nav.html"],
+}
