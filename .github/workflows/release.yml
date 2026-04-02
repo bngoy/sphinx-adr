@@ -1,5 +1,11 @@
 name: Release to PyPI
 
+# Fallback trigger for manually pushed tags.
+# The primary release path is the "release" job in auto-tag.yml,
+# which runs after auto-tagging on PR merge.
+# Tags created by GITHUB_TOKEN (auto-tag) do NOT trigger push events,
+# so this workflow only fires for tags pushed by humans or PATs.
+
 on:
   push:
     tags:
