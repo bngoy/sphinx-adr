@@ -192,9 +192,12 @@ def test_adrlist_filter_by_status(make_project, tmp_path):
     html = (Path(app.outdir) / "index.html").read_text()
 
     assert "Accepted One" in html
-    # The proposed one should be filtered out from the timeline
-    # (it still exists as a page, just not in the adrlist)
-    assert "adr-dot-proposed" not in html
+    # The proposed one should be filtered out from the main timeline
+    # (it still exists in the sidebar nav, just not in the adrlist)
+    timeline_start = html.index('class="adr-timeline"')
+    timeline_end = html.index("<!-- /adr-timeline -->")
+    timeline_html = html[timeline_start:timeline_end]
+    assert "adr-dot-proposed" not in timeline_html
 
 
 def test_adrlist_sort_by_date(make_project, tmp_path):

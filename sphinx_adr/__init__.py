@@ -7,7 +7,13 @@ from typing import Any
 
 from sphinx.application import Sphinx
 
-from .collector import init_adr_env, merge_adr_info, process_adr_lists, purge_adr_doc
+from .collector import (
+    init_adr_env,
+    inject_adr_nav_context,
+    merge_adr_info,
+    process_adr_lists,
+    purge_adr_doc,
+)
 from .directives import AdrDirective, AdrListDirective
 from .nodes import (
     adr_list,
@@ -56,6 +62,12 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.connect("doctree-resolved", process_adr_lists)
     app.connect("env-purge-doc", purge_adr_doc)
     app.connect("env-merge-info", merge_adr_info)
+    app.connect("html-page-context", inject_adr_nav_context)
+    app.connect("builder-inited", _setup_sidebar)
+
+    # -- Templates -----------------------------------------------------------
+    templates_dir = os.path.join(os.path.dirname(__file__), "templates")
+    app.config.templates_path.append(templates_dir)
 
     # -- Static files --------------------------------------------------------
     static_dir = os.path.join(os.path.dirname(__file__), "static")
@@ -73,6 +85,22 @@ def setup(app: Sphinx) -> dict[str, Any]:
         "parallel_read_safe": True,
         "parallel_write_safe": True,
     }
+
+
+def _setup_sidebar(app: Sphinx) -> None:
+    """Prepend the ADR timeline sidebar to html_sidebars for all pages."""
+    sidebar_file = "adr_nav.html"
+
+    sidebars = app.config.html_sidebars
+    if not sidebars:
+        # No custom sidebars configured — set a default that works across themes
+        app.config.html_sidebars = {"**": [sidebar_file]}
+    else:
+        # Prepend our sidebar to every existing pattern
+        for pattern in list(sidebars.keys()):
+            templates = sidebars[pattern]
+            if sidebar_file not in templates:
+                sidebars[pattern] = [sidebar_file] + list(templates)
 
 
 def _add_static_path(app: Sphinx) -> None:

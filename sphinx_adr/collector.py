@@ -118,6 +118,52 @@ def process_adr_lists(app: Sphinx, doctree: nodes.document, docname: str) -> Non
         node.replace_self([new_node])
 
 
+def inject_adr_nav_context(
+    app: Sphinx,
+    pagename: str,
+    templatename: str,
+    context: dict,
+    doctree: Any,
+) -> None:
+    """Inject ADR sidebar navigation data into the Jinja2 template context."""
+    env = app.builder.env
+    if not hasattr(env, "adr_all_adrs"):
+        context["adr_nav_entries"] = []
+        return
+
+    all_adrs = env.adr_all_adrs
+    if not all_adrs:
+        context["adr_nav_entries"] = []
+        return
+
+    adrs = _sort_adrs(list(all_adrs.values()), "date-desc")
+
+    entries = []
+    for adr in adrs:
+        adr_docname = adr["docname"]
+        title = env.titles.get(adr_docname)
+        title_text = title.astext() if title else adr_docname
+        status = adr.get("status", "Proposed")
+
+        try:
+            uri = app.builder.get_relative_uri(pagename, adr_docname)
+        except Exception:
+            uri = adr_docname + ".html"
+
+        entries.append(
+            {
+                "title": title_text,
+                "uri": uri,
+                "status": status,
+                "status_lower": status.lower(),
+                "date": adr.get("date", ""),
+                "current": pagename == adr_docname,
+            }
+        )
+
+    context["adr_nav_entries"] = entries
+
+
 def _render_timeline(
     app: Sphinx, adrs: list[dict], current_docname: str
 ) -> str:
@@ -181,5 +227,5 @@ def _render_timeline(
         lines.append("    </div>")
         lines.append("  </div>")
 
-    lines.append("</div>")
+    lines.append("</div><!-- /adr-timeline -->")
     return "\n".join(lines)

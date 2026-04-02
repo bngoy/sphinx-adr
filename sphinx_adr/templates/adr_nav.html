@@ -1,0 +1,19 @@
+{# ADR sidebar navigation — compact timeline with status dots #}
+{% if adr_nav_entries %}
+<div class="adr-sidebar-nav">
+  <p class="adr-sidebar-heading">Decision log</p>
+  <div class="adr-sidebar-timeline">
+    {%- for entry in adr_nav_entries %}
+    <a href="{{ entry.uri }}"
+       class="adr-sidebar-entry{% if entry.current %} adr-sidebar-current{% endif %}"
+       title="{{ entry.title }}">
+      <span class="adr-sidebar-dot adr-dot-{{ entry.status_lower }}"></span>
+      <span class="adr-sidebar-info">
+        <span class="adr-sidebar-title">{{ entry.title }}</span>
+        <span class="adr-status adr-status-{{ entry.status_lower }}">{{ entry.status }}</span>
+      </span>
+    </a>
+    {%- endfor %}
+  </div>
+</div>
+{% endif %}
