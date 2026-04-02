@@ -25,7 +25,7 @@ classifiers = [
     "Topic :: Software Development :: Documentation",
 ]
 dependencies = [
-    "sphinx>=8.0",
+    "sphinx>=9.0",
 ]
 
 [project.optional-dependencies]

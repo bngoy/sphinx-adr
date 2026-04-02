@@ -8,7 +8,7 @@ Project context for Claude Code sessions.
 
 ## Tech stack
 
-- **Python 3.13+** with **Sphinx >= 8.0**
+- **Python 3.13+** with **Sphinx >= 9.0**
 - **docutils** -- custom nodes and directives
 - **Hatchling** -- build backend (pyproject.toml)
 - **uv** -- package manager and task runner
