@@ -34,7 +34,8 @@ def test_adr_directive_basic(make_project, tmp_path):
             "index.rst": (
                 "Title\n"
                 "=====\n\n"
-                ".. adrlist::\n"
+                ".. toctree::\n\n"
+                "   adr1\n"
             ),
             "adr1.rst": (
                 "ADR-1: Test Decision\n"
@@ -65,7 +66,7 @@ def test_adr_directive_status_validation(make_project, tmp_path):
     """An invalid status value causes a build error."""
     srcdir = make_project(
         {
-            "index.rst": "Title\n=====\n\n.. adrlist::\n",
+            "index.rst": "Title\n=====\n\n.. toctree::\n\n   adr1\n",
             "adr1.rst": (
                 "ADR-1\n"
                 "=====\n\n"
@@ -74,6 +75,7 @@ def test_adr_directive_status_validation(make_project, tmp_path):
             ),
         }
     )
+    # The build should produce a warning/error about invalid status
     outdir = tmp_path / "_build"
     doctreedir = outdir / ".doctrees"
     app = Sphinx(
@@ -95,7 +97,7 @@ def test_adr_meta_renders_in_html(make_project, tmp_path):
     """The meta banner appears in the built HTML."""
     srcdir = make_project(
         {
-            "index.rst": "Title\n=====\n\n.. adrlist::\n",
+            "index.rst": "Title\n=====\n\n.. toctree::\n\n   adr1\n",
             "adr1.rst": (
                 "ADR-1: My Decision\n"
                 "===================\n\n"
@@ -129,7 +131,10 @@ def test_adrlist_renders_timeline(make_project, tmp_path):
             "index.rst": (
                 "Title\n"
                 "=====\n\n"
-                ".. adrlist::\n"
+                ".. adrlist::\n\n"
+                ".. toctree::\n\n"
+                "   adr1\n"
+                "   adr2\n"
             ),
             "adr1.rst": (
                 "ADR-1\n=====\n\n"
@@ -154,66 +159,6 @@ def test_adrlist_renders_timeline(make_project, tmp_path):
     assert "adr-dot-proposed" in html
 
 
-def test_adrlist_auto_toctree_hidden_by_default(make_project, tmp_path):
-    """ADR pages are registered via auto-toctree without manual toctree."""
-    srcdir = make_project(
-        {
-            "index.rst": (
-                "Title\n"
-                "=====\n\n"
-                ".. adrlist::\n"
-            ),
-            "adr1.rst": (
-                "ADR-1\n=====\n\n"
-                ".. adr::\n"
-                "   :status: Accepted\n"
-                "   :date: 2024-01-01\n"
-            ),
-        }
-    )
-    app = _build(srcdir, tmp_path)
-
-    # Build should succeed without "not in any toctree" warnings becoming errors
-    assert app.statuscode == 0
-
-    # The ADR page should be built
-    assert (Path(app.outdir) / "adr1.html").exists()
-
-    # Sidebar should NOT contain the ADR link (hidden by default)
-    index_html = (Path(app.outdir) / "index.html").read_text()
-    # The timeline should still be there
-    assert "adr-timeline" in index_html
-
-
-def test_adrlist_sidebar_toc_enabled(make_project, tmp_path):
-    """When adr_sidebar_toc = True, ADRs appear in sidebar navigation."""
-    srcdir = make_project(
-        {
-            "index.rst": (
-                "Title\n"
-                "=====\n\n"
-                ".. adrlist::\n"
-            ),
-            "adr1.rst": (
-                "ADR-1: Visible in Sidebar\n"
-                "=========================\n\n"
-                ".. adr::\n"
-                "   :status: Accepted\n"
-                "   :date: 2024-01-01\n"
-            ),
-        },
-        conf_extra='adr_sidebar_toc = True',
-    )
-    app = _build(srcdir, tmp_path)
-    assert app.statuscode == 0
-
-    # With sidebar toc enabled, the toctree should be visible (not hidden),
-    # meaning the sidebar/toctree HTML will contain a link to the ADR
-    index_html = (Path(app.outdir) / "index.html").read_text()
-    assert "adr-timeline" in index_html
-    assert (Path(app.outdir) / "adr1.html").exists()
-
-
 def test_adrlist_filter_by_status(make_project, tmp_path):
     """Filtering by status only shows matching ADRs."""
     srcdir = make_project(
@@ -222,7 +167,10 @@ def test_adrlist_filter_by_status(make_project, tmp_path):
                 "Title\n"
                 "=====\n\n"
                 ".. adrlist::\n"
-                "   :status: Accepted\n"
+                "   :status: Accepted\n\n"
+                ".. toctree::\n\n"
+                "   adr1\n"
+                "   adr2\n"
             ),
             "adr1.rst": (
                 "ADR-1: Accepted One\n"
@@ -232,7 +180,6 @@ def test_adrlist_filter_by_status(make_project, tmp_path):
                 "   :date: 2024-01-01\n"
             ),
             "adr2.rst": (
-                ":orphan:\n\n"
                 "ADR-2: Proposed One\n"
                 "===================\n\n"
                 ".. adr::\n"
@@ -257,7 +204,10 @@ def test_adrlist_sort_by_date(make_project, tmp_path):
             "index.rst": (
                 "Title\n"
                 "=====\n\n"
-                ".. adrlist::\n"
+                ".. adrlist::\n\n"
+                ".. toctree::\n\n"
+                "   adr1\n"
+                "   adr2\n"
             ),
             "adr1.rst": (
                 "ADR-1: Older\n"

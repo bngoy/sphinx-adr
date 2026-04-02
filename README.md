@@ -89,9 +89,13 @@ Architecture Decision Log
 =========================
 
 .. adrlist::
-```
 
-That's it — no manual `.. toctree::` needed. The `adrlist` directive automatically registers all ADR pages with Sphinx.
+.. toctree::
+   :hidden:
+
+   0001-use-sphinx
+   0002-adopt-adr-process
+```
 
 ### 5. Build
 
@@ -177,16 +181,10 @@ Install: `pip install furo`
 
 ## Configuration
 
-In `conf.py`:
+In `conf.py` you can optionally customise the allowed statuses:
 
 ```python
-# Valid statuses for the :status: option (default shown)
 adr_statuses = ["Proposed", "Accepted", "Deprecated", "Superseded"]
-
-# Show ADR entries in the sidebar table of contents (default: False).
-# When False, the sidebar only shows the decision log page itself.
-# When True, each ADR appears as a child entry in the sidebar.
-adr_sidebar_toc = False
 ```
 
 ## Development

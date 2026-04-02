@@ -7,13 +7,7 @@ from typing import Any
 
 from sphinx.application import Sphinx
 
-from .collector import (
-    init_adr_env,
-    merge_adr_info,
-    process_adr_lists,
-    purge_adr_doc,
-    register_adr_toctrees,
-)
+from .collector import init_adr_env, merge_adr_info, process_adr_lists, purge_adr_doc
 from .directives import AdrDirective, AdrListDirective
 from .nodes import (
     adr_list,
@@ -40,11 +34,6 @@ def setup(app: Sphinx) -> dict[str, Any]:
         ["Proposed", "Accepted", "Deprecated", "Superseded"],
         "env",
     )
-    app.add_config_value(
-        "adr_sidebar_toc",
-        False,
-        "env",
-    )
 
     # -- Custom nodes --------------------------------------------------------
     app.add_node(
@@ -64,7 +53,6 @@ def setup(app: Sphinx) -> dict[str, Any]:
 
     # -- Events --------------------------------------------------------------
     app.connect("env-before-read-docs", init_adr_env)
-    app.connect("env-updated", register_adr_toctrees)
     app.connect("doctree-resolved", process_adr_lists)
     app.connect("env-purge-doc", purge_adr_doc)
     app.connect("env-merge-info", merge_adr_info)
