@@ -238,11 +238,11 @@ html[data-theme="dark"] {
   margin: 24px 0;
 }
 
-/* Vertical line */
+/* Vertical line — centered on the dots (center axis at 16px from left) */
 .adr-timeline::before {
   content: "";
   position: absolute;
-  left: 15px;
+  left: 14.5px;
   top: 0;
   bottom: 0;
   width: 3px;
@@ -261,37 +261,61 @@ html[data-theme="dark"] {
   padding-bottom: 0;
 }
 
-/* Status dot on the timeline */
+/* Status dot on the timeline — centered on the line (center axis at 16px)
+   Dot: 18px diameter + 3px border = 24px outer.  left = 16 - 12 = 4px */
 .adr-timeline-dot {
   position: absolute;
-  left: 7px;
+  left: 4px;
   top: 4px;
-  width: 19px;
-  height: 19px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 3px solid var(--adr-dot-ring);
   box-shadow: 0 0 0 2px var(--adr-border);
   z-index: 1;
+  transition: box-shadow 0.3s ease;
 }
 
 .adr-dot-accepted {
   background-color: var(--adr-accepted-accent);
-  box-shadow: 0 0 0 2px var(--adr-accepted-accent);
+  box-shadow: 0 0 6px 2px var(--adr-accepted-accent),
+              0 0 0 2px var(--adr-accepted-accent);
 }
 
 .adr-dot-proposed {
   background-color: var(--adr-proposed-accent);
-  box-shadow: 0 0 0 2px var(--adr-proposed-accent);
+  box-shadow: 0 0 6px 2px var(--adr-proposed-accent),
+              0 0 0 2px var(--adr-proposed-accent);
 }
 
 .adr-dot-deprecated {
   background-color: var(--adr-deprecated-accent);
-  box-shadow: 0 0 0 2px var(--adr-deprecated-accent);
+  box-shadow: 0 0 6px 2px var(--adr-deprecated-accent),
+              0 0 0 2px var(--adr-deprecated-accent);
 }
 
 .adr-dot-superseded {
   background-color: var(--adr-superseded-accent);
-  box-shadow: 0 0 0 2px var(--adr-superseded-accent);
+  box-shadow: 0 0 6px 2px var(--adr-superseded-accent),
+              0 0 0 2px var(--adr-superseded-accent);
+}
+
+/* Glow pulse on hover */
+.adr-timeline-item:hover .adr-dot-accepted {
+  box-shadow: 0 0 12px 4px var(--adr-accepted-accent),
+              0 0 0 2px var(--adr-accepted-accent);
+}
+.adr-timeline-item:hover .adr-dot-proposed {
+  box-shadow: 0 0 12px 4px var(--adr-proposed-accent),
+              0 0 0 2px var(--adr-proposed-accent);
+}
+.adr-timeline-item:hover .adr-dot-deprecated {
+  box-shadow: 0 0 12px 4px var(--adr-deprecated-accent),
+              0 0 0 2px var(--adr-deprecated-accent);
+}
+.adr-timeline-item:hover .adr-dot-superseded {
+  box-shadow: 0 0 12px 4px var(--adr-superseded-accent),
+              0 0 0 2px var(--adr-superseded-accent);
 }
 
 /* Card content */
@@ -365,12 +389,12 @@ html[data-theme="dark"] {
   }
 
   .adr-timeline-dot {
-    left: 5px;
-    width: 15px;
-    height: 15px;
+    left: 4px;
+    width: 14px;
+    height: 14px;
   }
 
   .adr-timeline::before {
-    left: 11px;
+    left: 12px;
   }
 }
