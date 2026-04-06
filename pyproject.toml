@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sphinx-adr"
-version = "0.3.0"
+version = "0.3.1"
 description = "Sphinx extension to document Architecture Decision Records (ADRs)"
 readme = "README.md"
 license = "Apache-2.0"
