@@ -156,6 +156,13 @@ def inject_adr_nav_context(
 
     context["adr_nav_entries"] = entries
 
+    # Sidebar header: logo + link back to a configurable home page
+    try:
+        home_uri = app.builder.get_relative_uri(pagename, app.config.adr_nav_home)
+    except Exception:
+        home_uri = "index.html"
+    context["adr_nav_home_uri"] = home_uri
+
 
 def _render_timeline(app: Sphinx, adrs: list[dict], current_docname: str) -> str:
     """Render ADRs as a vertical timeline."""
