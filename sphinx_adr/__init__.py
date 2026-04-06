@@ -45,6 +45,11 @@ def setup(app: Sphinx) -> dict[str, Any]:
         "adr",
         "env",
     )
+    app.add_config_value(
+        "adr_nav_home",
+        "index",
+        "html",
+    )
 
     # -- Custom nodes --------------------------------------------------------
     app.add_node(

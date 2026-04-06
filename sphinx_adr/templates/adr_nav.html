@@ -1,6 +1,13 @@
-{# ADR sidebar navigation — compact timeline with status dots #}
+{# ADR sidebar navigation — logo header + compact timeline with status dots #}
 {% if adr_nav_entries %}
 <div class="adr-sidebar-nav">
+  <a href="{{ adr_nav_home_uri }}" class="adr-sidebar-logo-link">
+    {%- if logo_url %}
+    <img src="{{ logo_url }}" alt="{{ project }}" class="adr-sidebar-logo" />
+    {%- else %}
+    <span class="adr-sidebar-project">{{ project }}</span>
+    {%- endif %}
+  </a>
   <p class="adr-sidebar-heading">Decision log</p>
   <div class="adr-sidebar-timeline">
     {%- for entry in adr_nav_entries %}
