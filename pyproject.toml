@@ -61,5 +61,8 @@ known-first-party = ["sphinx_adr"]
 # pytest
 # ---------------------------------------------------------------------------
 
+[tool.setuptools.package-data]
+sphinx_adr = ["static/*", "templates/*"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
